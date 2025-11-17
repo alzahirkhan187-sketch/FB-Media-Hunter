@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FB Media Hunter</title>
+    <style>
+        body {
+            background: #0d0d0d;
+            color: #fff;
+            font-family: Arial;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .box {
+            background: #1c1c1c;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #ff004f;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #ff3366;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        a {
+            color: #00c8ff;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔥 FB Media Hunter</h1>
+    <p>Download Facebook Public Videos & Images</p>
+
+    <div class="box">
+        <input id="fbUrl" type="text" placeholder="Paste Facebook Post URL">
+        <button onclick="getMedia()">Download</button>
+
+        <div id="output" class="result"></div>
+    </div>
+
+    <footer>
+        Powered by <b>Alzahir Khan</b>
+    </footer>
+
+<script>
+    async function getMedia() {
+        const url = document.getElementById("fbUrl").value;
+        const output = document.getElementById("output");
+
+        if (!url) return output.innerHTML = "❌ Please enter a URL";
+
+        output.innerHTML = "⏳ Fetching...";
+
+        try {
+            const res = await fetch("/server/api/fb?url=" + encodeURIComponent(url));
+            const data = await res.json();
+
+            if (data.error) {
+                output.innerHTML = "❌ " + data.error;
+            } else {
+                output.innerHTML = `
+                    <p>✔️ Media Found:</p>
+                    <a href="${data.url}" download>Download Media</a>
+                `;
+            }
+
+        } catch (e) {
+            output.innerHTML = "❌ Server Error";
+        }
+    }
+</script>
+
+</body>
+</html>
