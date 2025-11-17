@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB Media Hunter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f0f0f;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    .box {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 450px;
+      margin: auto;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    button {
+      background: #007bff;
+      border: none;
+      padding: 12px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    a {
+      color: #00fffb;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>FB Media Hunter</h1>
+  <p>Paste any public Facebook post link to download photos or videos.</p>
+
+  <div class="box">
+    <input type="text" id="fbUrl" placeholder="Paste Facebook Post URL">
+    <button onclick="downloadMedia()">Download</button>
+  </div>
+
+  <div id="result"></div>
+
+<script>
+  async function downloadMedia() {
+    const url = document.getElementById("fbUrl").value;
+
+    if (!url) {
+      alert("Please enter a Facebook URL");
+      return;
+    }
+
+    document.getElementById("result").innerHTML = "<p>Processing... Please wait.</p>";
+
+    try {
+      const res = await fetch(`/api/download?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+
+      if (data.error) {
+        document.getElementById("result").innerHTML = "<p>Error: " + data.error + "</p>";
+      } else {
+        let html = "<h3>Download Links:</h3>";
+        data.media.forEach((item, i) => {
+          html += `<p><a href="${item}" target="_blank">File ${i + 1}</a></p>`;
+        });
+        document.getElementById("result").innerHTML = html;
+      }
+
+    } catch (e) {
+      document.getElementById("result").innerHTML = "<p>Server error.</p>";
+    }
+  }
+</script>
+
+</body>
+</html>
