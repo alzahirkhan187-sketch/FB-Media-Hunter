@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FB Media Hunter - Facebook Video Downloader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 500px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 20px #000;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #00d0ff;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            background: #00d0ff;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            font-size: 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00aacc;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border-radius: 10px;
+            display: none;
+        }
+
+        a.btn {
+            padding: 10px 20px;
+            background: #28c128;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h1>FB Media Hunter</h1>
+        <p>Fast Facebook Video Downloader</p>
+
+        <input type="text" id="fbLink" placeholder="Paste Facebook video URL here…">
+
+        <button onclick="getFBVideo()">Download</button>
+
+        <div id="result"></div>
+    </div>
+
+    <footer>
+        Powered by <strong>Alzahir Khan</strong>
+    </footer>
+
+    <script>
+        async function getFBVideo() {
+            const url = document.getElementById("fbLink").value.trim();
+            const result = document.getElementById("result");
+
+            if (!url) {
+                result.style.display = "block";
+                result.innerHTML = "<p style='color:red;'>⚠ Please paste a Facebook video URL.</p>";
+                return;
+            }
+
+            result.style.display = "block";
+            result.innerHTML = "<p>⏳ Processing… Please wait</p>";
+
+            try {
+                const apiURL = `https://api.allorigins.win/get?url=${encodeURIComponent(
+                    "https://www.savefrom.net/api/get?k=fbe&url=" + url
+                )}`;
+
+                const res = await fetch(apiURL);
+                const data = await res.json();
+                const content = JSON.parse(data.contents);
+
+                if (content.url) {
+                    result.innerHTML = `
+                        <p>✅ Video found!</p>
+                        <a class="btn" href="${content.url}" download>Download Video</a>
+                    `;
+                } else {
+                    result.innerHTML = "<p style='color:red;'>❌ Unable to fetch video.</p>";
+                }
+
+            } catch (e) {
+                result.innerHTML = "<p style='color:red;'>❌ Error processing link.</p>";
+            }
+        }
+    </script>
+
+</body>
+</html>
