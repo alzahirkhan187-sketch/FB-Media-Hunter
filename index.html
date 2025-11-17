@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FB Media Hunter</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0d0d0d;
+        font-family: Arial, sans-serif;
+        color: white;
+        text-align: center;
+    }
+
+    .container {
+        margin-top: 60px;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #6ab8ff;
+        text-shadow: 0 0 10px #0077ff;
+    }
+
+    p {
+        color: #cccccc;
+        margin-bottom: 30px;
+    }
+
+    .input-box {
+        width: 90%;
+        max-width: 500px;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        margin-bottom: 20px;
+        background: #1c1c1c;
+        color: white;
+        border: 1px solid #444;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        background: #0077ff;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #005ec7;
+    }
+
+    #result {
+        margin-top: 30px;
+    }
+
+    .footer {
+        margin-top: 50px;
+        font-size: 14px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>FB Media Hunter</h1>
+    <p>Download Facebook videos & images instantly</p>
+
+    <input type="text" id="fbUrl" class="input-box" placeholder="Paste Facebook Post URL">
+
+    <button class="btn" onclick="downloadFB()">Download</button>
+
+    <div id="result"></div>
+
+    <div class="footer">
+        Powered by <b>Alzahir Khan</b>
+    </div>
+</div>
+
+<script>
+    async function downloadFB() {
+        let url = document.getElementById("fbUrl").value.trim();
+
+        if(url === "") {
+            alert("Please paste a Facebook URL");
+            return;
+        }
+
+        document.getElementById("result").innerHTML = "<p>Processing... 🔄</p>";
+
+        try {
+            let res = await fetch("/api/download?url=" + encodeURIComponent(url));
+            let data = await res.json();
+
+            if (!data.success) {
+                document.getElementById("result").innerHTML = "<p>Invalid URL or not public ❌</p>";
+                return;
+            }
+
+            let html = `<h3>Download Links:</h3>`;
+
+            if(data.video) {
+                html += `<p><a href="${data.video}" class="btn" download>Download Video</a></p>`;
+            }
+
+            if(data.image) {
+                html += `<p><a href="${data.image}" class="btn" download>Download Image</a></p>`;
+            }
+
+            document.getElementById("result").innerHTML = html;
+
+        } catch (e) {
+            document.getElementById("result").innerHTML = "<p>Error connecting to server ❌</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
